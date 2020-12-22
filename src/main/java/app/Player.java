@@ -17,7 +17,7 @@ public class Player {
 
     private int elo;
 
-
+    // constructors
 
     public Player(String name) {
         this.name = name;
@@ -30,6 +30,43 @@ public class Player {
     public Player(int id) {
         // get data from database
     }
+
+
+    // getters/setters
+
+    public boolean isInBattle() {
+        return inBattle;
+    }
+
+    public void setInBattle(boolean inBattle) {
+        this.inBattle = inBattle;
+    }
+
+    public int getHealthPoints() {
+        return healthPoints;
+    }
+
+    public void setHealthPoints(int healthPoints) {
+        this.healthPoints = healthPoints;
+    }
+
+    public int getAttackRate() {
+        return attackRate;
+    }
+
+    public void setAttackRate(int attackRate) {
+        this.attackRate = attackRate;
+    }
+
+    public int getElo() {
+        return elo;
+    }
+
+    public void setElo(int elo) {
+        this.elo = elo;
+    }
+
+
 
 
 }

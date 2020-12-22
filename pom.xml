@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>html-games.github.firsss21</groupId>
-    <artifactId>Simple online rpg game</artifactId>
+    <artifactId>simple.html5.game</artifactId>
     <version>1.0</version>
     <build>
         <plugins>
@@ -20,5 +20,13 @@
         </plugins>
     </build>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.16</version>
+        </dependency>
 
+    </dependencies>
 </project>
