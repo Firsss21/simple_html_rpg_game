@@ -7,8 +7,23 @@
     <groupId>html-games.github.firsss21</groupId>
     <artifactId>simple.html5.game</artifactId>
     <version>1.0</version>
+    <packaging>war</packaging>
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <port>5301</port>
+                    <path>/</path>
+                    <contextFile>src/main/webapp/WEB-INF/web.xml</contextFile>
+                    <mode>context</mode>
+                    <charset>UTF-8</charset>
+                    <warDirectory>target/${project.artifactId}-${project.version}</warDirectory>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -17,10 +32,31 @@
                     <target>8</target>
                 </configuration>
             </plugin>
+            <!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <source>8</source>-->
+<!--                    <target>8</target>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/jstl/jstl -->
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>

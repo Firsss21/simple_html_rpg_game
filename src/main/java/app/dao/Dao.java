@@ -6,11 +6,11 @@ import java.util.Optional;
 
 public interface Dao<T> {
 
-    Optional<T> get(Serializable key);
+    T get(int key);
 
     List<T> getAll();
 
-    boolean exist(Serializable key);
+    boolean exist(int key);
 
     void save(T t);
 
