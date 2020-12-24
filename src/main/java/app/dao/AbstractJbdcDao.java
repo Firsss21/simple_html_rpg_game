@@ -1,40 +1,40 @@
 package app.dao;
 
-import app.ConnectionFactory;
+import app.utils.ConnectionFactory;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class AbstractJbdcDao<T> implements Dao<T> {
 
-    private Connection connection;
+    private Connection connection = ConnectionFactory.getConnection();
 
-    public abstract String getSelectQuery();
-    public abstract String getCreateQuery();
-    public abstract String getUpdateQuery();
-    public abstract String getDeleteQuery();
+    protected abstract String getSelectQuery();
+    protected abstract String getCreateQuery();
+    protected abstract String getUpdateQuery();
+    protected abstract String getDeleteQuery();
 
     public abstract int getId(T t);
 
     protected abstract List<T> parseResultSet(ResultSet rs);
 
-    protected abstract void prepareStatementForInsert(PreparedStatement st, T t);
-    protected abstract void prepareStatementForUpdate(PreparedStatement st, T t);
+    protected abstract void prepareStatementForInsert(PreparedStatement st, T t) throws SQLException;
+    protected abstract void prepareStatementForUpdate(PreparedStatement st, T t) throws SQLException;
 
     @Override
     public T get(int key) {
 
         List<T> list = new ArrayList<>();
         String sql = getSelectQuery();
-        sql += "WHERE id = ?";
+        sql += " WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, key);
+            //System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             list = parseResultSet(rs);
         } catch (Exception e) {
@@ -47,6 +47,27 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
             return null;
         }
 }
+    public T get(String key, String column) {
+
+        List<T> list = new ArrayList<>();
+        String sql = getSelectQuery();
+        sql += " WHERE "+ column + " = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, key);
+            //System.out.println(statement.toString());
+            ResultSet rs = statement.executeQuery();
+            list = parseResultSet(rs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (list.size() == 1)
+            return list.iterator().next();
+        else {
+            assert list.size() == 1 : "get result more than one";
+            return null;
+        }
+    }
 
     @Override
     public List<T> getAll() {
@@ -67,17 +88,38 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
     public boolean exist(int key) {
         List<T> list = new ArrayList<>();
         String sql = getSelectQuery();
-        sql += "WHERE id = ?";
+        sql += " WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, key);
+            //System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             list = parseResultSet(rs);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if (list != null || list.size() == 1)
+        if (list.size() > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public boolean existByStringValueColumn(String key, String column) {
+        List<T> list = new ArrayList<>();
+        String sql = getSelectQuery();
+        sql += " WHERE "+ column +" = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, key);
+            System.out.println(statement.toString());
+            ResultSet rs = statement.executeQuery();
+            list = parseResultSet(rs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (list != null && list.size() == 1)
             return true;
         else
             return false;
@@ -119,6 +161,9 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
 
     @Override
         public void delete(T t) {
+
+        if (getId(t) == -1) return;
+
         String sql = getDeleteQuery();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setObject(1, getId(t));

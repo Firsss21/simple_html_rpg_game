@@ -1,32 +1,42 @@
 package app.dao;
 
-import app.User;
+import app.models.Player;
+import app.models.User;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsersDao extends AbstractJbdcDao<User>{
 
+
     @Override
-    public String getSelectQuery() {
+    protected String getSelectQuery() {
         return "SELECT * from users";
     }
 
+
     @Override
-    public String getCreateQuery() {
+    protected String getCreateQuery() {
         return "INSERT INTO users (login, password) \n" +
                 "VALUES (?, ?);";
     }
 
     @Override
-    public String getUpdateQuery() {
+    protected String getUpdateQuery() {
         return "UPDATE users SET login= ?, password = ? WHERE id= ?;";
     }
 
     @Override
-    public String getDeleteQuery() {
+    protected String getDeleteQuery() {
         return "DELETE FROM users WHERE id= ?;";
+    }
+
+    @Override
+    public int getId(User user) {
+        return user.getId();
     }
 
     @Override
@@ -44,5 +54,23 @@ public class UsersDao extends AbstractJbdcDao<User>{
             e.printStackTrace();
         }
         return result;
+    }
+
+    @Override
+    protected void prepareStatementForInsert(PreparedStatement st, User user) throws SQLException {
+        st.setString(1, user.getName());
+        st.setString(2, user.getPassword());
+    }
+
+    @Override
+    protected void prepareStatementForUpdate(PreparedStatement st, User user) throws SQLException {
+        st.setString(1, user.getName());
+        st.setString(2, user.getPassword());
+        st.setInt(3, user.getId());
+    }
+
+    public Player getPlayer(int id) {
+        PlayerDao playerDao = new PlayerDao();
+        return playerDao.get(id);
     }
 }

@@ -1,4 +1,4 @@
-package app;
+package app.models;
 
 public class Player {
 
@@ -19,20 +19,45 @@ public class Player {
 
     // constructors
 
+//    public Player(String name) {
+//        this.name = name;
+//        this.elo = 100;
+//        this.healthPoints = 100;
+//        this.attackRate = 10;
+//        this.inBattle = false;
+//    }
+
+    public String getName() {
+        return name;
+    }
+
     public Player(String name) {
         this.name = name;
         this.elo = 100;
         this.healthPoints = 100;
         this.attackRate = 10;
         this.inBattle = false;
+        // get data from database
     }
 
-    public Player(int id) {
-        // get data from database
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Player() {
+
     }
 
 
     // getters/setters
+
+    public int getId() {
+        return id;
+    }
 
     public boolean isInBattle() {
         return inBattle;
