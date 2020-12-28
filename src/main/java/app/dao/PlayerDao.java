@@ -16,7 +16,6 @@ public class PlayerDao extends AbstractJbdcDao<Player>{
 
     @Override
     protected String getCreateQuery() {
-        //System.out.println("players create query");
         return "INSERT INTO players (login, HealthPoints, AttackRate, Elo) \n" +
                 "VALUES (?, ?, ?, ?);";
     }
@@ -47,6 +46,7 @@ public class PlayerDao extends AbstractJbdcDao<Player>{
                 player.setElo(rs.getInt("Elo"));
                 player.setId(rs.getInt("id"));
                 player.setName(rs.getString("login"));
+                player.setTempHp(rs.getInt("HealthPoints"));
                 result.add(player);
             }
         } catch (Exception e) {
@@ -73,5 +73,4 @@ public class PlayerDao extends AbstractJbdcDao<Player>{
         st.setInt(5, player.getId());
     }
 
-    // @TODO добавить зависимость
 }

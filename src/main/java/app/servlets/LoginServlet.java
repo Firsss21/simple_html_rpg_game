@@ -4,6 +4,7 @@ import app.models.Player;
 import app.models.User;
 import app.dao.PlayerDao;
 import app.dao.UsersDao;
+import app.utils.Authentication;
 import app.utils.Md5;
 
 import javax.servlet.ServletException;
@@ -13,23 +14,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    // ссылка на хранилище пользователей
-//    private UsersRepository usersRepository;
 
-    @Override
-    public void init() throws ServletException {
-//        this.usersRepository = new UsersRepositoryInMemoryImpl();
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getServletContext().getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
-
-        // если есть чел в системе - логин
     }
 
     @Override
@@ -38,64 +34,47 @@ public class LoginServlet extends HttpServlet {
         String name = req.getParameter("name");
         String password = req.getParameter("password");
 
-        // Одно из полей пустое
-            // Показать ошибку
-        // Логин верный - пароль неверный
-            // Показать ошибку
+        Player player;
 
-            // Логин верный - пароль верный
-                // загрузить юзера из бд
-            // Такого логина нет - регистрация нового юзера
-
-            // редирект на хоум
-
-
-        UsersDao usersDao = new UsersDao();
-        PlayerDao playerDao = new PlayerDao();
-
-        if (usersDao.existByStringValueColumn(name, "login"))
+        if (!validInput(name, password))
         {
-            int userIdToSelect = usersDao.get(name, "login").getId();
-         //   System.out.println(userIdToSelect);
-           // System.out.println("pass eq = " + (usersDao.get(userIdToSelect).getPassword().equals(Md5.crypt(password))));
-//            usersDao.get(userIdToSelect).checkPassword()
-//            Player player = playerDao.get(userIdToSelect);
-//            System.out.println(player.getHealthPoints());
-            System.out.println("login");
-        } else {
-            System.out.println("krivo zaregano");
-            User user = new User();
-            user.setName(name);
-            user.setPassword(Md5.crypt(password));
-
-            usersDao.save(user);
-
-            Player player = new Player(name);
-            playerDao.save(player);
-
+            req.setAttribute("message", " Требуется пароль длинее 5 символов, логин длинее 5 символов, разрешены цифры и английские буквы");
+            req.getServletContext().getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
+            return;
         }
-        // если пользователь есть в системе
-//        if (usersRepository.isExist(name, password)) {
-//            // создаем для него сессию
-//            HttpSession session = req.getSession();
-//            // кладем в атрибуты сессии атрибут user с именем пользователя
-//            session.setAttribute("user", name);
-//            // перенаправляем на страницу home
-//            req.getServletContext().getRequestDispatcher("/home").forward(req, resp);
-//        } else {
-//            resp.sendRedirect(req.getContextPath() + "/login");
-//        }
-
         HttpSession session = req.getSession();
-        session.setAttribute("user", name);
-        // перенаправляем на страницу home
+        if (Authentication.userExist(name)) {
+            player = Authentication.loginAndGetPlayer(name, password);
+
+            if (player == null)  {
+                req.setAttribute("message", "Неправильный пароль.");
+                req.getServletContext().getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
+                return;
+            }
+
+            player.clientSessions.add(session);
+        }
+        else {
+            player = Authentication.createUserAndGetPlayer(name, password);
+            player.clientSessions.add(session);
+        }
+
+        session.setAttribute("player", player);
+
         resp.sendRedirect(req.getContextPath() + "/home");
-//        resp.sendRedirect(req.);
+    }
 
-//        req.getServletContext().getRequestDispatcher("/menu").forward(req, resp);
-        // Если такой юзер имеется в бд - логин, иначе новый юзер.
-
-//        resp.sendRedirect(req.getContextPath() + "/login");
+    public boolean validInput(String name, String password) {
+        String regexPattern = "^[A-Za-z0-9]+$";
+        if (name.length() < 4
+                || password.length() < 5
+                || !name.matches(regexPattern)
+                || !password.matches(regexPattern))
+        {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 

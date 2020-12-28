@@ -1,34 +1,43 @@
 package app.models;
 
+import app.matchmaker.Battle;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.*;
+
 public class Player {
 
     // tech
 
     private int id;
-    public boolean inBattle;
+    private boolean inBattle;
+    public Battle battle = null;
+    public final Set<HttpSession> clientSessions = Collections.synchronizedSet(new HashSet<>());
 
     // params
 
     private String name;
     private int healthPoints;
     private int attackRate;
-
+    private int tempHp;
     // statistic
 
     private int elo;
 
     // constructors
 
-//    public Player(String name) {
-//        this.name = name;
-//        this.elo = 100;
-//        this.healthPoints = 100;
-//        this.attackRate = 10;
-//        this.inBattle = false;
-//    }
-
     public String getName() {
         return name;
+    }
+
+    public int getTempHp() {
+        return tempHp;
+    }
+
+    public void setTempHp(int tempHp) {
+        this.tempHp = tempHp;
     }
 
     public Player(String name) {
@@ -37,6 +46,7 @@ public class Player {
         this.healthPoints = 100;
         this.attackRate = 10;
         this.inBattle = false;
+        this.tempHp = this.healthPoints;
         // get data from database
     }
 

@@ -1,0 +1,122 @@
+ * {
+    box-sizing: border-box;
+ }
+ body {
+    background: #f69a73;
+ }
+ .decor {
+    position: relative;
+    max-width: 400px;
+    margin: 50px auto 0;
+    background: white;
+    border-radius: 30px;
+ }
+
+ .form-inner {
+    padding: 50px;
+    font-family: 'Roboto', sans-serif;
+ }
+ .form-inner input, .form-inner textarea {
+    display: block;
+    width: 100%;
+    padding: 0 20px;
+    margin-bottom: 10px;
+    background: #E9EFF6;
+    line-height: 40px;
+    border-width: 0;
+    border-radius: 20px;
+
+ }
+
+
+.form-inner h4  {
+     color: #707981;
+     padding: 7px;
+     margin-bottom: 27px;
+     text-align: center;
+     line-height: 1;
+     text-transform: uppercase;
+ }
+
+ .form-inner h4 p {
+    font-size: 25px;
+ }
+
+ .form-inner h4 higher {
+     font-size: 35px;
+  }
+
+ .form-inner input[type="submit"] {
+
+    background: #f69a73;
+    border-bottom: 4px solid #d87d56;
+    color: white;
+    font-size: 14px;
+    font-weight: bold
+ }
+
+.mr_top {
+    margin-top: 30px;
+}
+
+mr_nul {
+    margin: 0 !important;
+}
+ .form-inner textarea {
+    resize: none;
+ }
+ .form-inner p {
+     font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+ }
+
+ .form-inner .biggerText {
+     font-size: 17px ;
+     font-weight: bolder;
+ }
+
+ .form-inner .biggerText p {
+    font-size: 17px ;
+    font-weight: bolder;
+ }
+ .form-inner h3 {
+    margin-top: 0;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+    color: #707981;
+ }
+
+ .form-inner h2 {
+     margin-top: 0;
+     margin-bot: 0;
+     font-family: 'Roboto', sans-serif;
+     font-weight: bold;
+     font-size: 18px;
+  }
+
+ .form-inner .form-inner-inner {
+     text-align: center;
+     background-color: darkseagreen;
+     border-radius: 10px;
+     margin: 5px;
+     padding: 5px;
+     font-weight: bold;
+ }
+
+ .form-inner .form-inner-inner progress {
+    height: 25px;
+    width: 40%;
+    border: 1px solid gray;
+    border-radius: 5px;
+ }
+
+::-webkit-progress-bar {
+    background: gray;
+}
+::-webkit-progress-value {
+    background: green;
+}
+::-moz-progress-bar {
+    background: gray;
+}

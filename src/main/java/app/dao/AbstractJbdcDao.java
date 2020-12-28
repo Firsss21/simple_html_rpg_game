@@ -1,5 +1,6 @@
 package app.dao;
 
+import app.Main;
 import app.utils.ConnectionFactory;
 
 import java.sql.Connection;
@@ -32,14 +33,19 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
         String sql = getSelectQuery();
         sql += " WHERE id = ?";
 
+        long time = System.currentTimeMillis();
+
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, key);
-            //System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             list = parseResultSet(rs);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        time = System.currentTimeMillis() - time;
+        Main.TOTAL_CONNECTION_TIME += time;
+
         if (list.size() == 1)
             return list.iterator().next();
         else {
@@ -53,14 +59,19 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
         String sql = getSelectQuery();
         sql += " WHERE "+ column + " = ?";
 
+        long time = System.currentTimeMillis();
+
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, key);
-            //System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             list = parseResultSet(rs);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        time = System.currentTimeMillis() - time;
+        Main.TOTAL_CONNECTION_TIME += time;
+
         if (list.size() == 1)
             return list.iterator().next();
         else {
@@ -75,12 +86,18 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
             List<T> list = new ArrayList<>();
             String sql = getSelectQuery();
 
+            long time = System.currentTimeMillis();
+
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 ResultSet rs = statement.executeQuery();
                 list = parseResultSet(rs);
             } catch (Exception e) {
                e.printStackTrace();
             }
+
+            time = System.currentTimeMillis() - time;
+            Main.TOTAL_CONNECTION_TIME += time;
+
             return list;
     }
 
@@ -90,14 +107,18 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
         String sql = getSelectQuery();
         sql += " WHERE id = ?";
 
+        long time = System.currentTimeMillis();
+
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, key);
-            //System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             list = parseResultSet(rs);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        time = System.currentTimeMillis() - time;
+        Main.TOTAL_CONNECTION_TIME += time;
 
         if (list.size() > 0)
             return true;
@@ -110,14 +131,18 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
         String sql = getSelectQuery();
         sql += " WHERE "+ column +" = ?";
 
+        long time = System.currentTimeMillis();
+
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, key);
-            System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             list = parseResultSet(rs);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        time = System.currentTimeMillis() - time;
+        Main.TOTAL_CONNECTION_TIME += time;
 
         if (list != null && list.size() == 1)
             return true;
@@ -132,21 +157,26 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
 
         String sql = getCreateQuery();
 
+        long time = System.currentTimeMillis();
+
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             prepareStatementForInsert(statement, t);
             int count = statement.executeUpdate();
-
             assert count == 1 : "creating more then 1 el";
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        time = System.currentTimeMillis() - time;
+        Main.TOTAL_CONNECTION_TIME += time;
     }
 
     @Override
     public void update(T t) {
 
         String sql = getUpdateQuery();
+
+        long time = System.currentTimeMillis();
 
         try (PreparedStatement statement = connection.prepareStatement(sql);) {
             prepareStatementForUpdate(statement, t);
@@ -157,12 +187,17 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        time = System.currentTimeMillis() - time;
+        Main.TOTAL_CONNECTION_TIME += time;
     }
 
     @Override
         public void delete(T t) {
 
         if (getId(t) == -1) return;
+
+        long time = System.currentTimeMillis();
 
         String sql = getDeleteQuery();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -172,5 +207,9 @@ public abstract class AbstractJbdcDao<T> implements Dao<T> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        time = System.currentTimeMillis() - time;
+        Main.TOTAL_CONNECTION_TIME += time;
+
     }
 }
